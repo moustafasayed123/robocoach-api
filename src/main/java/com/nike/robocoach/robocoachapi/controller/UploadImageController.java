@@ -5,9 +5,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class UploadImageController {
@@ -27,6 +26,17 @@ public class UploadImageController {
             logger.info("welcomeUser function");
             return ResponseEntity.ok().body("welcome: " + name);
         } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e);
+        }
+    }
+
+    @PostMapping("/uploadImage")
+    public ResponseEntity<Object> uploadImage(@RequestParam("image") MultipartFile image) {
+        try{
+            logger.info("calling uploadImage function");
+            uploadImageService.uploadImage(image);
+            return ResponseEntity.ok().body("file uploaded" );
+        }catch (Exception e) {
             return ResponseEntity.badRequest().body(e);
         }
     }
