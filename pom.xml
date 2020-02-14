@@ -44,6 +44,24 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
+		<dependency>
+			<groupId>org.bytedeco.javacpp-presets</groupId>
+			<artifactId>tensorflow</artifactId>
+			<version>1.9.0-1.4.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openpnp</groupId>
+			<artifactId>opencv</artifactId>
+			<version>3.4.2-1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.tensorflow</groupId>
+			<artifactId>tensorflow</artifactId>
+			<version>1.13.1</version>
+		</dependency>
+		<!-- Thanks for using https://jar-download.com -->
 	</dependencies>
 
 	<build>
