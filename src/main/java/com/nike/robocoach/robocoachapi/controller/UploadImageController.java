@@ -22,7 +22,7 @@ public class UploadImageController {
     @PostMapping("/uploadImage")
     public ResponseEntity<Object> uploadImage(@RequestBody RequestModel requestModel) {
         try {
-            logger.info("calling uploadImage function");
+            logger.info("calling uploadImage controller function");
             ResponseModel responseModel = uploadImageService.sendToCVModel(requestModel);
             return ResponseEntity.ok().body(responseModel);
         } catch (Exception e) {

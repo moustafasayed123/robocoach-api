@@ -9,6 +9,7 @@ public class RequestModel implements Serializable {
     private Athlete athlete;
     private String upmId;
     private String userImage;
+    private String professionalImage;
     private int frameIndex;
 
     public Activity getActivity() {
@@ -57,5 +58,13 @@ public class RequestModel implements Serializable {
 
     public void setFrameIndex(int frameIndex) {
         this.frameIndex = frameIndex;
+    }
+
+    public String getProfessionalImage() {
+        return professionalImage;
+    }
+
+    public void setProfessionalImage(String professionalImage) {
+        this.professionalImage = professionalImage;
     }
 }
