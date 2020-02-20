@@ -18,9 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,16 +84,18 @@ public class UploadImageServiceImpl implements UploadImageServiceApi {
 
     private double calculateFormFactor(PoseEstimationApiResponse user, PoseEstimationApiResponse professional) {
         logger.info("calling calculateFormFactor service function ");
+        Set<String> commonKeys = new HashSet<>(user.getBodyPart().keySet());
+        commonKeys.retainAll(professional.getBodyPart().keySet());
         Map<String, Double> coordinateResult = new HashMap<>();
-        for (String key : user.getBodyPart().keySet()) {
+        for (String key : commonKeys) {
             Double[] userCoordinate = user.getBodyPart().get(key);
             Double[] profCoordinate = professional.getBodyPart().get(key);
             coordinateResult.put(key, Math.sqrt(((userCoordinate[1] - profCoordinate[1]) * (userCoordinate[1] - profCoordinate[1]))
                     + ((userCoordinate[0] - profCoordinate[0]) * (userCoordinate[0] - profCoordinate[0]))));
         }
         double sum = coordinateResult.values().stream().reduce(0.0, Double::sum);
-        logger.info("final score is " + (sum / 17) / 640);
-        return (sum / 17) / 640;
+        logger.info("final score is = " + (sum / commonKeys.size()) / 640);
+        return (sum / commonKeys.size()) / 640;
     }
 }
 
