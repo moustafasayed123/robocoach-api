@@ -3,6 +3,7 @@ package com.nike.robocoach.robocoachapi.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.nike.robocoach.robocoachapi.dao.UploadImageDao;
 import com.nike.robocoach.robocoachapi.exception.BusinessException;
 import com.nike.robocoach.robocoachapi.model.*;
 import com.nike.robocoach.robocoachapi.service.UploadImageServiceApi;
@@ -14,6 +15,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,7 +27,9 @@ import java.util.stream.Collectors;
 public class UploadImageServiceImpl implements UploadImageServiceApi {
     private static final Logger logger = LogManager.getLogger(UploadImageServiceImpl.class);
     final String modelApiUrl = "http://robocoachlb-1485644589.us-west-2.elb.amazonaws.com:8081/v1/estimate/pose";
-    // final String modelApiUrl = "http://localhost:8081/v1/estimate/pose";
+    //final String modelApiUrl = "http://localhost:8081/v1/estimate/pose";
+    @Autowired
+    private UploadImageDao uploadImageDao;
 
     @Override
     public ResponseModel sendToCVModel(RequestModel requestModel) throws BusinessException, IOException {
@@ -37,6 +41,39 @@ public class UploadImageServiceImpl implements UploadImageServiceApi {
         List<Coordinate> profCoordinates = professional.getBodyPart().values().stream().map(element -> new Coordinate(element[0], element[1])).collect(Collectors.toList());
 
         return new ResponseModel(requestModel.getFrameIndex(), profCoordinates, userCoordinates, calculateFormFactor(user, professional));
+    }
+
+    @Override
+    public ActivityModel addActivity(ActivityModel activityModel) throws BusinessException {
+        try {
+            logger.info("calling addActivity service function ");
+            return uploadImageDao.save(activityModel);
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage());
+        }
+    }
+
+    @Override
+    public ActivityModel getActivity(long uuid) throws BusinessException {
+        try {
+            logger.info("calling getActivity service function");
+            Optional<ActivityModel> activityModel = uploadImageDao.findById(uuid);
+            return activityModel.orElse(null);
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage());
+        }
+
+    }
+
+    @Override
+    public List<ActivityModel> getAllActivity() throws BusinessException {
+        try {
+            logger.info("calling getAllActivity service function");
+            List<ActivityModel> activityVos = uploadImageDao.findAll();
+            return activityVos.stream().map(record -> new ActivityModel(record.getId(), record.getSport(), record.getActivity(), record.getAthlete())).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 
     private CloseableHttpResponse callPoseEstimationModelAPI(String image) throws BusinessException {

@@ -1,4 +1,10 @@
 package com.nike.robocoach.robocoachapi.dao;
 
-public class UploadImageDao {
+import com.nike.robocoach.robocoachapi.model.ActivityModel;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface UploadImageDao extends JpaRepository<ActivityModel, Long> {
+
 }
